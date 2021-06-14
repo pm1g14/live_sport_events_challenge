@@ -9,6 +9,30 @@ import validate.impl.MatchEventRawResponseValidator
 
 class RawToMatchEventsAdapterTest extends FunSuite {
 
+  test("convertRawToMatchEvents is invoked with list of raw events but wrong game duration order") {
+    val adapter = new RawToMatchEventsAdapter(Stream("0xf81016", "0x801002"), new MatchEventRawResponseValidator)
+    val actualMatch = adapter.convertRawToMatchEvents
+    val expectedState = MatchState(events = Stream(
+      Event(
+        lastScored = "team1",
+        pointsScored = 2,
+        team1P = 2,
+        team2P = 0,
+        matchTime = Duration.ofSeconds(16L),
+        matchScore = "2 - 0"
+      ),
+      Event(
+        lastScored = "team2",
+        pointsScored = 2,
+        team1P = 2,
+        team2P = 2,
+        matchTime = Duration.ofSeconds(31L),
+        matchScore = "2 - 2"
+      )))
+    val expectedMatch = Match(state = expectedState)
+    assert(actualMatch.state.events.size == 2)
+    assert(actualMatch.state.events.equals(expectedMatch.state.events))
+  }
 
   test("convertRawToMatchEvents is invoked with a list of raw events should return the correct match object") {
     val adapter = new RawToMatchEventsAdapter(Stream("0x801002", "0xf81016", "0x1d8102f"), new MatchEventRawResponseValidator)

@@ -10,7 +10,7 @@ class MatchEventQueryService(responseParser: ResponseParser[String, Stream[Strin
 
   override def getLatestEvent(id: String): Event = {
     val adapter = new RawToMatchEventsAdapter(responseParser.parse(id), validator)
-    adapter.convertRawToMatchEvents.state.events.last
+    adapter.convertRawToMatchEvents.state.events.toStream.last
   }
 
 
