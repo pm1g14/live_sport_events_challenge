@@ -140,4 +140,11 @@ class MatchEventQueryServiceTest extends FunSuite {
     assert(service.queryForEvents(matchId, Some(2)).equals(expectedLastEvent))
   }
 
+  test("invoking queryForEvents for the last 2 values on an empty file should return empty") {
+    val matchId = "src/test/resources/sample5.txt"
+    val service = new MatchEventQueryService(resourceParser, validator)
+
+    assert(service.queryForEvents(matchId, Some(2)).isEmpty)
+  }
+
 }
